@@ -1,0 +1,18 @@
+header {
+display: flex;
+justify-content: space-between;
+width: 100%;
+}
+
+.start {
+    text-align: center;
+}
+
+.container {
+    margin: 250px auto 0 auto;
+    max-width: 600px;
+}
+
+.hide {
+    display: none;
+}
