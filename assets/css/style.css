@@ -1,7 +1,51 @@
+
+body {
+    font-family: monospace;
+}
+
+
 header {
 display: flex;
 justify-content: space-between;
 width: 100%;
+font-size: 25px;
+}
+
+.container h1 {
+    font-size: 45px;
+}
+
+.container p {
+    font-size: 25px;
+}
+
+.container h2 {
+    font-size: 30px;
+}
+
+#feedback {
+    font-size: 50px;
+}
+
+#highscores {
+    font-size: 35px;
+}
+
+#initials {
+    font-family: monospace;
+    font-size: 25px;
+}
+
+.btn {
+    font-family: inherit;
+    font-size: 25px;
+}
+
+.answer-btn {
+    font-family: inherit;
+    font-size: 25px;
+    display: grid;
+    margin: 20px;
 }
 
 .start {

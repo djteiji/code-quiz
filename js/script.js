@@ -2,43 +2,43 @@
 var questionsArr = [
     {
       title: "Javascript is a(n) _______ language?",
-      choices: ["Object-Oriented", "Object Based", "Procedural", "None Of The Above"],
-      answer: "Object-Oriented"
+      choices: ["A. Object-Oriented", "B. Object Based", "C. Procedural", "D. None Of The Above"],
+      answer: "A. Object-Oriented"
     },
     {
       title: "Which of the following keywords is used to define a variable in Javascript?",
       choices: [
-        "var",
-        "let",
-        "Both A and B",
-        "None of the above"
+        "A. var",
+        "B. let",
+        "C. Both A and B",
+        "D. None of the above"
       ],
-      answer: "Both A and B"
+      answer: "C. Both A and B"
     },
     {
       title: "Which of the following methods is used to access HTML elements using Javascript?",
-      choices: ["getElementById()", "getElementByClassName()", "Both A and B", "None of the above"],
-      answer: "Both A and B"
+      choices: ["A. getElementById()", "B. getElementByClassName()", "C. Both A and B", "D. None of the above"],
+      answer: "C. Both A and B"
     },
     {
       title: "Upon encountering empty statements, what does the Javascript Interpreter do?",
       choices: [
-        "Throws an error",
-        "Ignores the statements",
-        "Gives a warning",
-        "None of the above"
+        "A. Throws an error",
+        "B. Ignores the statements",
+        "C. Gives a warning",
+        "D. None of the above"
       ],
-      answer: "Ignores the statements"
+      answer: "B. Ignores the statements"
     },
     {
       title: "When an operator’s value is NULL, the typeof returned by the unary operator is:",
       choices: [
-        "Boolean",
-        "Undefined",
-        "Object",
-        "Integer"
+        "A. Boolean",
+        "B. Undefined",
+        "C. Object",
+        "D. Integer"
       ],
-      answer: "Object"
+      answer: "C. Object"
      }
     
 
@@ -52,7 +52,14 @@ var startBtn = document.querySelector("#start-button");
 var questionsEl = document.querySelector("#questions");
 var timerEl = document.querySelector("#time");
 var choicesEl = document.querySelector("#choices");
-var feedbackEl = document.querySelector("#feedback")
+var feedbackEl = document.querySelector("#feedback");
+var finalScoreEl = document.querySelector("#final-score");
+var initialsEl = document.querySelector("#initials");
+var submitBtn = document.querySelector("#submit");
+var leaderBoardEl = document.querySelector("#highscores");
+var clearScoresBtn = document.querySelector("#clear");
+var viewHighScores = document.querySelector("#view-scores")
+
 // var choiceButtonEl = "";
 // var currentQuestion = "";
 var currentChoicesArr = [];
@@ -64,6 +71,8 @@ var currentChoicesIndex = 0;
 var time = questionsArr.length * 15;
 var timerId;
 var choicesArrIndex = 0;
+var highScores = [];
+
 
 
 function startQuiz() {
@@ -100,6 +109,8 @@ function getQuestion() {
     for(var i = 0; i < currentQuestion.choices.length; i++){
         var choiceButtonEl = document.createElement("button");
         choicesEl.appendChild(choiceButtonEl);
+
+        choiceButtonEl.setAttribute("class", "answer-btn");
 
         
 
@@ -147,15 +158,20 @@ function nextQuestion() {
         console.log(this.value);
         console.log(questionsArr[currentQuestionIndex].answer);
         document.body.style.backgroundColor = "red"
+        feedbackEl.removeAttribute("class")
+        feedbackEl.textContent = "Wrong! Idiot!! 🤬"
         
 
         time -= 15;
     } else {
         document.body.style.backgroundColor = "green"
+        feedbackEl.removeAttribute("class")
+        feedbackEl.textContent = "Correct! Genius!! 😃"
     }
 
     setTimeout(function() {
-        document.body.style.backgroundColor = "white" 
+        document.body.style.backgroundColor = "white"
+        feedbackEl.setAttribute("class", "hide")
     }, 2000);
 //     feedbackEl.setAttribute("class", "feedback");
 //     setTimeout(function() {
@@ -190,11 +206,21 @@ function endQuiz () {
         console.log(this.value);
         console.log(questionsArr[currentQuestionIndex].answer);
         document.body.style.backgroundColor = "red"
+        feedbackEl.removeAttribute("class")
+        feedbackEl.textContent = "Wrong! Idiot!! 🤬"
+        
 
         time -= 15;
-
-        
+    } else {
+        document.body.style.backgroundColor = "green"
+        feedbackEl.removeAttribute("class")
+        feedbackEl.textContent = "Correct! Genius!! 😃"
     }
+
+    setTimeout(function() {
+        document.body.style.backgroundColor = "white"
+        feedbackEl.setAttribute("class", "hide")
+    }, 2000);
 
     clearInterval(timerId);
 
@@ -206,16 +232,91 @@ function endQuiz () {
         timerEl.textContent = 0;
     }
 
-    
-
     questionsEl.setAttribute("class", "hide");
 
     var endScreenEl = document.getElementById("end-screen");
-    endScreenEl.removeAttribute("class");
+    
+    setTimeout(function() {
+        endScreenEl.removeAttribute("class");
+    }, 2000);
 
+    finalScoreEl.textContent = timerEl.textContent;
+    
+}
+
+
+function saveHighScore () {
+    var initials = initialsEl.value.trim();
+
+    var highScores = JSON.parse(localStorage.getItem("highscores")) || [];
+
+    var newScore = {
+        score: time,
+        initials: initials 
+        };
+
+        highScores.push(newScore);
+        localStorage.setItem("highscores", JSON.stringify(highScores));
+            
+        console.log(newScore);
+        console.log(highScores);
+
+        printHighScores();
+
+}    
+
+
+function printHighScores () {
+    var endScreenEl = document.getElementById("end-screen");
+    endScreenEl.setAttribute("class", "hide")
+
+    var highScoresScreenEl = document.getElementById("high-scores-screen");
+    highScoresScreenEl.removeAttribute("class")
+
+    var highScores = JSON.parse(localStorage.getItem("highscores")) || [];
+    console.log(highScores);
+
+    highScores.sort(function(a,b) {
+        return b.score - a.score;
+    });
+
+    for(var i = 0; i < 10; i++){
+        var topScores = document.createElement("li");
+        leaderBoardEl.appendChild(topScores);
+
+        topScores.innerHTML = highScores[i].score + "  -  " + highScores[i].initials;
+
+        
+
+        console.log(topScores);
+    }
 
     
 }
+
+
+function showLeaderBoard () {
+    var startScreenEl = document.getElementById ("start-screen")
+    startScreenEl.setAttribute("class", "hide")
+
+    printHighScores();
+    
+    
+}
+
+viewHighScores.addEventListener("click", showLeaderBoard, { once: true })
+
+
+function clearHighScores() {
+    localStorage.clear();
+    leaderBoardEl.setAttribute("class", "hide")
+}
+
+clearScoresBtn.addEventListener("click", clearHighScores);
+
+
+
+submitBtn.addEventListener("click", saveHighScore);
 
 startBtn.addEventListener("click", startQuiz);
 
